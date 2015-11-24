@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>上传资源</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<br/><br/>
+<div class="container">
+	<div class="row">
+		<div class="col-md-5">
+			<form action="sysResourcesController/insert.do" id="sys" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+				    <label>名称:</label>
+				    <input type="text" class="form-control" name="name">
+				</div>
+				<div class="form-group">
+				    <label>时长:</label>
+				    <input type="text" class="form-control" name="duration">
+				</div>
+				<div class="form-group">
+				    <label>类别:</label>
+				    <select id="type_" name="typeid">
+				    	<option value="0">选择类别</option>
+				    </select>
+				</div>
+				<div class="form-group">
+				    <label for="exampleInputFile">文件</label>
+				    <input type="file" name="file">
+				</div>
+				<button type="button" class="btn btn-default" onclick="submit()">提交</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript">
+	  	function submit(){
+	  		$("#sys").submit();
+	  	}
+	  	$(function(){
+	  		 jQuery.ajax({	
+		  		url: 'typeInfoController/selectAll.do',			  		
+		  		type: "POST",  		
+		  		success: function(msg){
+		  			if(msg.result=="false"){
+		  				return;
+		  			}		  			
+		  			var array = eval(msg.resultObj);	
+		  			for(var i=0;i<array.length;i++){
+		  				$("#type_").append("<option value="+array[i].id+">"+array[i].name+"</option>")
+		  			}		  					
+		  		}	
+		  	});
+	  	});
+	</script>
+</body>
+
+</html>

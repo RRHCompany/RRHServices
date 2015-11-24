@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+				http://www.springframework.org/schema/util
+      http://www.springframework.org/schema/util/spring-util-3.0.xsd
+      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:property-placeholder location="classpath:*.properties"/>
+	<!-- 注解支持 -->
+	<context:annotation-config />
+	<!--<context:component-scan base-package="user" /> 包名 -->
+	<context:component-scan base-package="com.rrh">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan><!-- 包名 -->
+	
+	<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath*:*.properties</value>
+            </list>
+        </property>
+    </bean>
+
+	<!-- c3p0 数据库连接池（同类产品：apache） -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    	<property name="driverClass">
+			<value>#{configProperties['datasource.driverClass']}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>#{configProperties['datasource.jdbcUrl']}</value>
+		</property>
+		<property name="user">
+			<value>#{configProperties['datasource.user']}</value>
+		</property>
+		<property name="password">
+			<value>#{configProperties['datasource.password']}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>#{configProperties['datasource.initialPoolSize']}</value>
+			<!-- <value>${datasource.initialPoolSize}</value> -->
+		</property>
+		<property name="minPoolSize">
+			<value>#{configProperties['datasource.minPoolSize']}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>#{configProperties['datasource.maxPoolSize']}</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>#{configProperties['datasource.checkoutTimeout']}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>#{configProperties['datasource.maxIdleTime']}</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>#{configProperties['datasource.idleConnectionTestPeriod']}</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>#{configProperties['datasource.acquireIncrement']}</value>
+		</property>
+	</bean>
+
+	<!-- mybatis sessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- mybatis配置文件路径 -->
+		<property name="mapperLocations" value="classpath*:com/rrh/**/*.xml" />
+		
+		<property name="plugins">  
+            <ref bean="paginationInterceptor"/>  
+        </property>
+	</bean>
+	
+	<!-- MyBatis映射扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+  		<property name="basePackage" value="com.rrh" />
+	</bean>
+	
+    <!-- 定义事务管理器（声明式的事务） -->
+	<bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>
+		
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:advisor pointcut="execution(* com.rrh.service.impl.*.*(..))" advice-ref="txAdvice" />
+	</aop:config>
+</beans>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+				http://www.springframework.org/schema/util
+      http://www.springframework.org/schema/util/spring-util-3.0.xsd
+      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- 注解支持 -->
+	<context:annotation-config />
+	<mvc:annotation-driven />
+	
+	<!-- 设置使用注解的类所在的jar包 -->
+	<context:component-scan base-package="com.rrh">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan><!-- 包名 -->
+
+	<!-- 完成请求和注解POJO的映射 -->
+	<!-- 返回JSON模版 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<!-- 文件上传 -->
+	 <bean id="multipartResolver"       
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver"       
+          p:defaultEncoding="utf-8" >          
+        <property name="maxUploadSize" value="10485760000"></property>  
+        <property name="maxInMemorySize" value="40960"></property> 
+     </bean>
+	<!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/" p:suffix=".jsp" />
+
+	<aop:config>
+		<aop:aspect id="tokenVerify" ref="tokenVerify">
+            <!--配置com.spring.service包下所有类或接口的所有方法-->
+            <aop:pointcut id="businessService" expression="execution(* com.rrh.control.*.*(..))" />
+            <aop:before pointcut-ref="businessService" method="doBefore"/>
+            <aop:around pointcut-ref="businessService" method="doAround"/>
+        </aop:aspect>
+	</aop:config>
+	
+	<!--对静态资源文件的访问-->
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/fonts/**" location="/fonts/" />
+	<mvc:resources mapping="/*.html" location="/" />
+	<mvc:resources mapping="/*.htm" location="/" />
+</beans>
