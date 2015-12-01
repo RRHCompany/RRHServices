@@ -34,7 +34,9 @@
 					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
 			</list>
 		</property>
-	</bean>
+	</bean> 
+
+	
 	<!-- 文件上传 -->
 	 <bean id="multipartResolver"       
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver"       
