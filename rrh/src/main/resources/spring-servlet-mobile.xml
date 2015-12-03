@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+				http://www.springframework.org/schema/util
+      http://www.springframework.org/schema/util/spring-util-3.0.xsd
+      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- 注解支持 -->
+	<context:annotation-config />
+	<mvc:annotation-driven />
+	<!-- 设置使用注解的类所在的jar包 -->
+	<context:component-scan base-package="com.rrh.mobile.control" />
+	
+	<!-- 返回jason数据视图 -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="1" />
+	</bean>
+	<bean id="jsonView" class="com.rrh.mobile.view.MobileJsonView" />
+	<!-- 添加拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/mobile/**" />
+			<bean class="com.rrh.mobile.interceptor.MobileInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<aop:config>
+		<aop:aspect id="tokenVerify" ref="tokenVerify">
+            <!--配置com.spring.service包下所有类或接口的所有方法-->
+            <aop:pointcut id="businessService" expression="execution(* com.rrh.mobile.control..*.*(..))" />
+            <aop:before pointcut-ref="businessService" method="doBefore"/>
+            <aop:around pointcut-ref="businessService" method="doAround"/>
+        </aop:aspect>
+	</aop:config>
+</beans>

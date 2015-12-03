@@ -76,4 +76,10 @@ public interface TbUsersMapper {
      * @return
      */
     int selectUserIdByUserName(String userName);
+    /**
+     * 判断手机号码是否存在
+     * @param mobile
+     * @return
+     */
+    int selectUserIdByMobile(String mobile);
 }

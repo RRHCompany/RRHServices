@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rrh.base.BaseResponse;
-import com.rrh.common.ErrorMsgConstant;
-import com.rrh.common.SystemConstant;
+import com.rrh.mobile.ConstantsMobile;
+import com.rrh.mobile.base.BaseResponse;
 
 @ControllerAdvice
 @Lazy
@@ -24,9 +23,9 @@ public class ExceptionHandler {
 	public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response){
 		log.error("全局异常捕获==============>start");
 		log.error("", e);
-		JSONObject errorJson = (JSONObject) JSON.toJSON(new BaseResponse(ErrorMsgConstant.PUBLIC_SYSTEM_ERRORCODE, SystemConstant.DEFAULT_REQUEST_TIME));
+		JSONObject errorJson = (JSONObject) JSON.toJSON(new BaseResponse(ConstantsMobile.RESULT_CODE_ERROR_SYSTEM));
 		try {
-			com.rrh.common.CommonUtils.sendJson((HttpServletResponse) response, errorJson);
+			com.rrh.common.utils.CommonUtils.sendJson((HttpServletResponse) response, errorJson);
 		} catch (IOException e1) {
 			log.error("", e1);
 		}

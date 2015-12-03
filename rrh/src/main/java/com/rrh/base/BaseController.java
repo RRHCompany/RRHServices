@@ -4,7 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.rrh.common.SystemConstant;
+import com.rrh.mobile.SystemConstant;
 
 public class BaseController {
 

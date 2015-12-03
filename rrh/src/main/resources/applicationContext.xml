@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans default-autowire="byName" xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop"
+<beans default-autowire="byName"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -15,25 +13,29 @@
       http://www.springframework.org/schema/util/spring-util-3.0.xsd
       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-	<context:property-placeholder location="classpath:*.properties"/>
 	<!-- 注解支持 -->
 	<context:annotation-config />
-	<!--<context:component-scan base-package="user" /> 包名 -->
-	<context:component-scan base-package="com.rrh">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-	</context:component-scan><!-- 包名 -->
-	
-	<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="locations">
-            <list>
-                <value>classpath*:*.properties</value>
-            </list>
-        </property>
-    </bean>
+	<mvc:annotation-driven />
+	<!-- 设置使用注解的类所在的jar包 -->
+	<context:component-scan base-package="com.rrh.common" />
+	<context:component-scan base-package="com.rrh.mapper" />
+	<context:component-scan base-package="com.rrh.mobile.control" />
+	<context:component-scan base-package="com.rrh.mobile.aop" />
+	<context:component-scan base-package="com.rrh.mobile.service" />
+	<!--<context:component-scan base-package="com.rrh">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan> 包名 -->
+
+	<bean id="configProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations" value="classpath*:*.properties"/>
+	</bean>
 
 	<!-- c3p0 数据库连接池（同类产品：apache） -->
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-    	<property name="driverClass">
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
 			<value>#{configProperties['datasource.driverClass']}</value>
 		</property>
 		<property name="jdbcUrl">
@@ -62,7 +64,8 @@
 			<value>#{configProperties['datasource.maxIdleTime']}</value>
 		</property>
 		<property name="idleConnectionTestPeriod">
-			<value>#{configProperties['datasource.idleConnectionTestPeriod']}</value>
+			<value>#{configProperties['datasource.idleConnectionTestPeriod']}
+			</value>
 		</property>
 		<property name="acquireIncrement">
 			<value>#{configProperties['datasource.acquireIncrement']}</value>
@@ -73,33 +76,62 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<!-- mybatis配置文件路径 -->
-		<property name="mapperLocations" value="classpath*:com/rrh/**/*.xml" />
-		
-		<property name="plugins">  
-            <ref bean="paginationInterceptor"/>  
-        </property>
+		<property name="mapperLocations" value="classpath*:com/rrh/mapper/**/*.xml" />
+		<property name="plugins">
+			<ref bean="paginationInterceptor" />
+		</property>
 	</bean>
-	
+
 	<!-- MyBatis映射扫描 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-  		<property name="basePackage" value="com.rrh" />
+		<property name="basePackage" value="com.rrh.mapper" />
 	</bean>
-	
-    <!-- 定义事务管理器（声明式的事务） -->
-	<bean id="transactionManager"  
-        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
-        <property name="dataSource" ref="dataSource" />  
-    </bean>
-		
+
+	<!-- 定义事务管理器（声明式的事务） -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="find*" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
-			<tx:method name="get*" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
-			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
-
 	<aop:config>
-		<aop:advisor pointcut="execution(* com.rrh.service.impl.*.*(..))" advice-ref="txAdvice" />
+		<aop:advisor pointcut="execution(* com.renrenhui.mobile.services..*.*(..))" advice-ref="txAdvice" />
 	</aop:config>
+
+	<!-- 返回JSON模版 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<!-- 文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="utf-8">
+		<property name="maxUploadSize" value="10485760000"></property>
+		<property name="maxInMemorySize" value="40960"></property>
+	</bean>
+	<!-- 国际化的消息资源文件 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找 -->
+				<value>classpath:i18n_msg</value>
+			</list>
+		</property>
+		<!-- 如果在国际化资源文件中找不到对应代码的信息，就用这个代码作为名称  -->
+		<property name="useCodeAsDefaultMessage" value="true" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+	</bean>
 </beans>

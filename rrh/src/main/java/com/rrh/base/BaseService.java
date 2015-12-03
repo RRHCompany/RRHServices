@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.rrh.common.utils.LoggerFactory;
+
 /**
  * 基础服务，只包含最基本的 增、删、改、查
  * 注：
@@ -21,7 +23,8 @@ import org.apache.log4j.Logger;
  * @param <T>
  */
 public abstract class BaseService<T> implements IBaseService<T>  {
-	protected final Logger log = Logger.getLogger(BaseService.class.getName());
+	
+	protected final LoggerFactory log = LoggerFactory.getInstaner();
 	
 	protected Object baseMapper;
 	

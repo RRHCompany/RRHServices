@@ -409,7 +409,7 @@
   </select>
   
    <select id="selectUserByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    user_id, user_name, mobile, password, true_name, nick_name, money, gender, 
+   select user_id, user_name, mobile, password, true_name, nick_name, money, gender, 
     birthday, small_img, big_img, reg_time, last_time, login_count, is_certification, 
     province, city, area, id_card, id_card_image, business_name, business_desc, business_traffic, 
     business_address, business_domain, business_weixin, details, signature, email, pay_password, 
@@ -420,7 +420,7 @@
   </select>
   
   <select id="selectUserByOpenId" resultMap="BaseResultMap" parameterType="com.rrh.model.user.TbUsers" >
-    user_id, user_name, mobile, password, true_name, nick_name, money, gender, 
+    select user_id, user_name, mobile, password, true_name, nick_name, money, gender, 
     birthday, small_img, big_img, reg_time, last_time, login_count, is_certification, 
     province, city, area, id_card, id_card_image, business_name, business_desc, business_traffic, 
     business_address, business_domain, business_weixin, details, signature, email, pay_password, 
@@ -440,8 +440,13 @@
   </select>
   
   <select id="selectUserIdByUserName" resultType="java.lang.Integer" parameterType="java.lang.String" >
-    select count(user_id) from tb_users
+    select user_id from tb_users
     where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUserIdByMobile" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select user_id from tb_users
+    where mobile = #{mobile,jdbcType=VARCHAR}
   </select>
   
   <select id="selectAll" resultMap="BaseResultMap" >
