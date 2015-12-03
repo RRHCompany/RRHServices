@@ -41,7 +41,7 @@ public class usersController extends BaseController{
 	@RequestMapping("register")
 	@ResponseBody
 	public BaseResponse register(UserRegisterRequest bean){
-		return userService.userRegister(bean);
+		return userService.phoneRegister(bean);
 	}
 	//查询我的信息
 	@RequestMapping("getUserInfo")
