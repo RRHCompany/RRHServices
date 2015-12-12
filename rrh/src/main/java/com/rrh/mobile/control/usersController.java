@@ -1,5 +1,7 @@
 package com.rrh.mobile.control;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rrh.base.BaseController;
 import com.rrh.mobile.ConstantsMobile;
-import com.rrh.mobile.base.BaseRequest;
 import com.rrh.mobile.base.BaseResponse;
 import com.rrh.mobile.bean.req.UserLoginOtherRequest;
 import com.rrh.mobile.bean.req.UserPerfectInfoRequest;
@@ -31,18 +32,20 @@ public class usersController extends BaseController{
 	public BaseResponse login(@RequestParam String mobile, @RequestParam String password, HttpSession session){
 		return userService.phoneLogin(mobile, password);
 	}
-	//校验用户名
-	@RequestMapping("verifyUserByUserName")
-	@ResponseBody
-	public BaseResponse verifyUserByUserName(@RequestParam String userName, HttpSession session){
-		return userService.verifyUserByUserName(userName);
-	}
+	
 	//用户注册
 	@RequestMapping("register")
 	@ResponseBody
 	public BaseResponse register(UserRegisterRequest bean){
 		return userService.phoneRegister(bean);
 	}
+	//用户注册--完善信息
+	@RequestMapping("registerPerfectInfo")
+	@ResponseBody
+	public BaseResponse registerPerfectInfo(@RequestParam int userId,@RequestParam String nickName,@RequestParam String smallImg,@RequestParam String bigImg,@RequestParam Date birthday,@RequestParam int gender){
+		return userService.registerPerfectInfo(userId,nickName,smallImg,bigImg,birthday,gender);
+	}
+	
 	//查询我的信息
 	@RequestMapping("getUserInfo")
 	@ResponseBody

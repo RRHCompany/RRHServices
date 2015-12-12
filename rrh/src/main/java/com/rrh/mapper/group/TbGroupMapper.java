@@ -2,6 +2,9 @@ package com.rrh.mapper.group;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.rrh.common.mybatis.bean.GroupListBean;
 import com.rrh.model.group.TbGroup;
 
 public interface TbGroupMapper {
@@ -44,4 +47,10 @@ public interface TbGroupMapper {
      * @mbggenerated Wed Nov 25 14:34:45 CST 2015
      */
     int updateByPrimaryKey(TbGroup record);
+    
+    /**查询我的普通群列表*/
+    public List<GroupListBean> findGroupList(@Param(value="userId") int userId);
+    /**查询认证群和副群列表*/
+    public List<GroupListBean> findGroupAuthList(@Param(value="userId") int userId);
+    
 }

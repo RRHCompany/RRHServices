@@ -16,16 +16,16 @@
 	<!-- 注解支持 -->
 	<context:annotation-config />
 	<mvc:annotation-driven />
-	<!-- 设置使用注解的类所在的jar包 -->
+	<!-- 设置使用注解的类所在的jar包 --><!--
 	<context:component-scan base-package="com.rrh.common" />
 	<context:component-scan base-package="com.rrh.mapper" />
 	<context:component-scan base-package="com.rrh.mobile.control" />
 	<context:component-scan base-package="com.rrh.mobile.aop" />
-	<context:component-scan base-package="com.rrh.mobile.service" />
-	<!--<context:component-scan base-package="com.rrh">
+	<context:component-scan base-package="com.rrh.mobile.service" />包名 -->
+	<context:component-scan base-package="com.rrh">
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
-	</context:component-scan> 包名 -->
+	</context:component-scan> 
 
 	<bean id="configProperties"
 		class="org.springframework.beans.factory.config.PropertiesFactoryBean">

@@ -1,6 +1,9 @@
 package com.rrh.mapper.user;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.rrh.model.user.TbUsers;
 
@@ -57,29 +60,14 @@ public interface TbUsersMapper {
      * @return
      */
     List<TbUsers> selectByModelSelective(TbUsers record);
-    /**
-     * 通过电话验证用户是否已注册 
-     * @param mobile
-     * @return
-     */
-    int selectUserIdByPhone(String mobile);
-    /**
-     * 通过电话号码查询用户信息
-     * @param mobile
-     * @return
-     */
-    TbUsers selectUserByPhone(String mobile);
+   
     TbUsers selectUserByOpenId(TbUsers record);
-    /**
-     * 通过用户名验证用户是否已经存在
-     * @param userName
-     * @return
-     */
-    int selectUserIdByUserName(String userName);
-    /**
-     * 判断手机号码是否存在
-     * @param mobile
-     * @return
-     */
-    int selectUserIdByMobile(String mobile);
+    
+    /**通过手机号码查询用户信息*/
+    public TbUsers getByMobile(@Param(value="mobile") String mobile);
+    /**统计手机号码用户数量*/
+    public int countByMobile(String mobile);
+    /**完善注册用户信息*/
+    public int registerPerfectInfo(@Param(value="userId") int userId,@Param(value="nickName") String nickName,@Param(value="smallImg") String smallImg,@Param(value="bigImg") String bigImg,@Param(value="birthday") Date birthday,@Param(value="gender") int gender);
+    
 }

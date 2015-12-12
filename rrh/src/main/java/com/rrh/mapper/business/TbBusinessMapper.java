@@ -2,6 +2,9 @@ package com.rrh.mapper.business;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.rrh.mobile.bean.req.BusinessCreateTeamRequest;
 import com.rrh.model.business.TbBusiness;
 
 public interface TbBusinessMapper {
@@ -44,4 +47,9 @@ public interface TbBusinessMapper {
      * @mbggenerated Wed Nov 25 14:34:55 CST 2015
      */
     int updateByPrimaryKey(TbBusiness record);
+    
+    //创建团队
+    public int insertCreateTeam(BusinessCreateTeamRequest groupTeam);
+    //获取团队信息
+    public TbBusiness getByUserID(@Param(value="userId") int userId);
 }

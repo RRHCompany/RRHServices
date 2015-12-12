@@ -1,9 +1,10 @@
 package com.rrh.mobile.service.user;
 
+import java.util.Date;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rrh.base.IBaseService;
-import com.rrh.mobile.base.BaseRequest;
 import com.rrh.mobile.base.BaseResponse;
 import com.rrh.mobile.bean.req.UserLoginOtherRequest;
 import com.rrh.mobile.bean.req.UserPerfectInfoRequest;
@@ -18,12 +19,7 @@ public interface IUserService<T> extends IBaseService<T> {
 	 * @return
 	 */
 	public BaseResponse phoneLogin(String mobile, String password);
-	/**
-	 * 校验用户名是否已使用
-	 * @param userName
-	 * @return
-	 */
-	public BaseResponse verifyUserByUserName(String userName);
+	
 	/**
 	 * 手机号码注册
 	 * @param bean 用户bean
@@ -72,4 +68,6 @@ public interface IUserService<T> extends IBaseService<T> {
 	 * @return
 	 */
 	public BaseResponse uploadUserImg(MultipartFile file, String photoSuffix, String userId);
+	//完善注册信息
+	public BaseResponse registerPerfectInfo(int userId, String nickName,String smallImg,String bigImg , Date birthday, int gender);
 }

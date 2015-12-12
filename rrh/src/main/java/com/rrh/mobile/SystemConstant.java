@@ -8,8 +8,6 @@ public class SystemConstant {
 	//不通过登录 过滤器的方法名，用逗号隔开
 	public static final String LOGINFILTER_METHOD_FREE = "login.do,createVerifyCode.do,verifyCode.do,verifyUserByUserName.do,register.do,recoverPwd.do";
 	
-	public static final String VERIFYCODE_TYPE_REGISTER = "1";//验证码类型 注册
-	public static final String VERIFYCODE_TYPE_FORGETPWD = "2";//验证码类别 忘记密码
 	//第三方登录 
 	public static final String USER_LOGINOTHER_WEIXIN = "openIdWeixin";
 	public static final String USER_LOGINOTHER_QQ = "openIdQq";

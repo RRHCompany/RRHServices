@@ -14,6 +14,7 @@ import com.rrh.mapper.user.TbUsersMapper;
 import com.rrh.mapper.user.TbVerifyMapper;
 import com.rrh.mobile.ConstantsMobile;
 import com.rrh.mobile.ErrorMsgConstant;
+import com.rrh.mobile.ResultMobile;
 import com.rrh.mobile.base.BaseResponse;
 import com.rrh.mobile.service.user.IVerifyService;
 import com.rrh.model.user.TbVerify;
@@ -34,78 +35,47 @@ public class VerifyService extends BaseService<TbVerify> implements IVerifyServi
 	}
 	
 	/**
-	 * 获取难验证码 type 1 注册  2 忘记密码 
+	 * 获取验证码 type 1 注册  2 忘记密码 
 	 */
+	@Override
 	public BaseResponse createVerifyCode(String mobile,String type){
-		if(StringUtils.isEmpty(mobile)){
-			return new BaseResponse(ConstantsMobile.RESULT_CODE_ERROR_PARAM);
-		}else if(!RegexpUtil.isMobile(mobile)){
-			return new BaseResponse(ErrorMsgConstant.USER_PHONE_ERRORCODE);
+		if(StringUtils.isEmpty(mobile)||StringUtils.isEmpty(type)){
+			return ResultMobile.resultErroParam();
+		}
+		if(!RegexpUtil.isMobile(mobile)){
+			return ResultMobile.resultFall("user.mobile.format.error");
 		}
 		try{
-			boolean flag = verifyMobile(mobile, type);
-			if(flag){
-				//随机验证码
-				String code = CommonUtils.createRandom(true, 4);//4位的数字验证码
-				HashMap<String,Object> map = new HashMap<String, Object>();
-				map.put("tab", Integer.valueOf(type));
-				map.put("mobile", mobile);
-				map.put("code", CommonUtils.encordSQL(code,0));
-				map.put("returnValue", 0);
-				tbVerifyMapper.createVerify(map);	
-				Integer result = (Integer)map.get("returnValue");
-				if(result != null && result != -1){					
-					//调用发送短信接口
-					boolean sendOk = true;
-					if(sendOk){
-						memcachedManager.enforceSet(mobile, code, 3600);//3600秒有效期
-						return new BaseResponse(ConstantsMobile.RESULT_CODE_SUCCESS);
-					}else{
-						return new BaseResponse(ErrorMsgConstant.SMS_SEND_CODE_CHECKED_ERRORCODE);
-					}
-					
-				}else{
-					return new BaseResponse(ErrorMsgConstant.SMS_CREATE_VERIFY_MOREREQUEST_ERRORCODE);
-				}
+			int userCount=tbUsersMapper.countByMobile(mobile);
+			if(userCount>0){
+				return ResultMobile.resultFall("user.mobile.exists");
+			}
+			//随机验证码
+			String code = CommonUtils.createRandom(true, 4);//4位的数字验证码
+			HashMap<String,Object> map = new HashMap<String, Object>();
+			map.put("tab", Integer.valueOf(type));
+			map.put("mobile", mobile);
+			map.put("code", CommonUtils.encordSQL(code,0));
+			map.put("returnValue", 0);
+			tbVerifyMapper.createVerify(map);	
+			Integer result = (Integer)map.get("returnValue");
+			if(result == null || result == -1){					
+				return ResultMobile.resultFall("sms.verify.req.often");
+			}
+			//调用发送短信接口
+			boolean sendOk = true;
+			if(sendOk){
+				memcachedManager.enforceSet(mobile, code, 3600);//3600秒有效期
+				return ResultMobile.resultSuccess(null);
 			}else{
-				return new BaseResponse(type.equals("1")?ErrorMsgConstant.USER_PHONE_HAD_RESGISTER_ERRORCODE:ErrorMsgConstant.USER_EXTEND_ERRORCODE);
+				return ResultMobile.resultFall("sms.verify.send.error");
 			}
 		}catch(Exception e){
 			log.error("", e);
-			return new BaseResponse(ConstantsMobile.RESULT_CODE_ERROR_SYSTEM);
+			return ResultMobile.resultErroSystem();
 		}
 	}
 	
-		
-	/**
-	 * 校验手机号码是否注册
-	 * @param mobile
-	 * @return
-	 */
-	public boolean verifyMobile(String mobile,String type){		
-		try {
-			int userId = tbUsersMapper.selectUserIdByPhone(mobile);
-			if(type.equals("1")){
-				//电话号码已注册
-				if(userId > 0){
-					return false;
-				}else{
-					return true;
-				}
-			}else{
-				//电话号码已注册
-				if(userId > 0){
-					return true;
-				}else{
-					return false;
-				}
-			}
-			
-		} catch (Exception e) {
-			log.error("", e);
-			return false;
-		}
-	}
 	/**
 	 * 校验验证码
 	 * @param mobile
