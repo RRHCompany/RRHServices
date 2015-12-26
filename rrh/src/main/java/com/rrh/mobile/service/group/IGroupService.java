@@ -11,5 +11,8 @@ public interface IGroupService<T> extends IBaseService<T> {
 	public BaseResponse findGroupList(int userId);
 	//查询认证群和副群列表
 	public BaseResponse findGroupAuthList(int userId);
+	//查询群详请
+	public BaseResponse getGroupDetail(int groupId);
+	
 	
 }

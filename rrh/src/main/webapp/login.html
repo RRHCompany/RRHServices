@@ -11,9 +11,38 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    
 </head>
 
 <body>
+<style type="text/css">
+#bage_style tr{
+	border-bottom:1px #eee solid;
+}
+#bage_style tr td{
+	border-left: 1px #eee solid;
+}
+#bage_style tr td a img {
+	width: 100%;
+}
+</style>
+
+<table cellpadding="0" cellspacing="0" id="bage_style" style="border:1px #eee solid;">
+{foreach from=$ads item=ad name=foo}
+	{if $smarty.foreach.foo.index%4==0}
+		<tr>
+	{/if}
+			<td>{$ad}</td>
+	{if $smarty.foreach.foo.index%4==0}
+		</tr>
+	{/if}
+{/foreach}
+</table>
+
+
+
+
+
 	<br/><br/><br/><br/>
     <div class="container">
         <div class="row">

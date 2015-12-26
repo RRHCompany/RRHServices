@@ -110,7 +110,7 @@ public class FriendService extends BaseService<TbFriend> implements IFriendServi
 				friendUser.setStatus(Constants.FRIEND_STATUS_3);
 				tbFriendMapper.updateByPrimaryKey(friendUser);
 			}
-			FriendIM.requestFriendMessage(userId+"", friendId+"", new ContactNtfMessage("哈1", userId+"",friendId+"", extra), "哈2", "哈3");
+			FriendIM.requestFriendMessage(friendId+"",extra);
 			return ResultMobile.resultSuccess(null);
 		} catch (Exception e) {
 			log.error("", e);
@@ -123,7 +123,7 @@ public class FriendService extends BaseService<TbFriend> implements IFriendServi
 		try {
 			tbFriendMapper.updateStatusByUserIDAndFriendID(userId, friendId, Constants.FRIEND_STATUS_1);
 			tbFriendMapper.updateStatusByUserIDAndFriendID(friendId, userId, Constants.FRIEND_STATUS_1);
-			FriendIM.addFriendMessage(userId+"", friendId+"", new ContactNtfMessage("哈1", userId+"",friendId+"", "哈4"), "哈2", "哈3");
+			FriendIM.addFriendMessage(friendId+"", userId+"编号");
 			return ResultMobile.resultSuccess(null);
 		} catch (Exception e) {
 			log.error("", e);
@@ -141,6 +141,7 @@ public class FriendService extends BaseService<TbFriend> implements IFriendServi
 			return ResultMobile.resultErroSystem();
 		}
 	}
+	/**查询好友会话项*/
 	@Override
 	public BaseResponse getFriendItem(int userId, int friendId) {
 		try {

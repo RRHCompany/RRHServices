@@ -60,4 +60,11 @@ public class groupController extends BaseController{
 	public BaseResponse findGroupAuthList(@RequestParam int userId, HttpSession session){
 		return groupService.findGroupAuthList(userId);
 	}
+	
+	//查询群详情
+	@RequestMapping("getGroupDetail")
+	@ResponseBody
+	public BaseResponse getGroupDetail(@RequestParam int groupId, HttpSession session){
+		return groupService.getGroupDetail(groupId);
+	}
 }

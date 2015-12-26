@@ -119,7 +119,7 @@ public class UserService extends BaseService<TbUsers> implements IUserService<Tb
 				}
 			}
 			String mobile = CommonUtils.encordSQL(bean.getMobile(),0);
-			//查询用户名是否存在
+			//查询手机号码是否存在
 			int userCount = tbUsersMapper.countByMobile(mobile);
 			//手机已注册
 			if(userCount > 0){
@@ -135,20 +135,15 @@ public class UserService extends BaseService<TbUsers> implements IUserService<Tb
 			user.setRegTime(time);
 			user.setLastTime(time);
 			user.setLoginCount(1);
-			int userID = tbUsersMapper.insert(user);
-			String token = TokenUtils.getTokenByUserId(userID);
-			
+			tbUsersMapper.insert(user);
 			//设备信息保存
 			TbMobileSession mobileSession = new TbMobileSession();
 			mobileSession.setAppChannel(bean.getAppChannel());
 			mobileSession.setAppDeviceInfo(bean.getAppDeviceInfo());
 			mobileSession.setAppSystem(bean.getAppSystem());
-			mobileSession.setLoginToken(token);
-			mobileSession.setUserId(userID);
+			mobileSession.setUserId(user.getUserId());
 			tbMobileSessionMapper.insert(mobileSession);
-			
-			UserRegisterResponse response = new UserRegisterResponse(userID, token);
-			return ResultMobile.resultSuccess(response);
+			return ResultMobile.resultSuccess("userId",user.getUserId());
 		} catch (Exception e) {
 			log.error("", e);
 			return ResultMobile.resultErroSystem();
@@ -324,29 +319,40 @@ public class UserService extends BaseService<TbUsers> implements IUserService<Tb
 	}
 	//上传用户头像
 	@Override
-	public BaseResponse uploadUserImg(MultipartFile file, String photoSuffix, String userId){
-		if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(photoSuffix) || file == null){
-			return new BaseResponse(ConstantsMobile.RESULT_CODE_ERROR_PARAM);
+	public BaseResponse uploadUserImg(int userId,MultipartFile picFile){
+		if(picFile == null){
+			return ResultMobile.resultErroParam();
 		}
 		try{
 			//查询用户信息
-			TbUsers user = selectById(Integer.valueOf(userId));
-			File targetFile = new File(sourceManager.getUserPicFolderPath(true) + UUID.randomUUID().toString().replace("-", "") + "." + photoSuffix );
-			if(!targetFile.exists())
-				targetFile.mkdirs();
-			if(!StringUtils.isEmpty(user.getSmallImg())) //删除旧图片
-				new File( sourceManager.getUserPicFolderPath(true) + user.getSmallImg() ).delete();
+			TbUsers user = tbUsersMapper.selectByPrimaryKey(userId);
+			if(user==null){
+				return ResultMobile.resultErroUserNo();
+			}
+			String fileName=picFile.getOriginalFilename();
+			String fileSuffix=fileName.substring(fileName.lastIndexOf("."), fileName.length());
+			File targetFile = new File(sourceManager.getUserPicHeadPath(true) + UUID.randomUUID().toString().replace("-", "") + fileSuffix );
+			System.out.println(targetFile.getAbsolutePath());
+			//保存图片
+			picFile.transferTo(targetFile);
+			if(!StringUtils.isEmpty(user.getSmallImg())){
+				//删除旧图片
+				new File(sourceManager.getUserPicHeadPath(true) + user.getSmallImg()).delete();
+			}
+			if(!StringUtils.isEmpty(user.getBigImg())){
+				//删除旧图片
+				new File(sourceManager.getUserPicHeadPath(true) + user.getBigImg()).delete();
+			}
 			user.setSmallImg(targetFile.getName());
 			user.setBigImg(targetFile.getName());
-			update(user);
-			//保存	
-	        file.transferTo(targetFile);
+			tbUsersMapper.updateByPrimaryKey(user);
 	        UserImgResponse resp = new UserImgResponse();
-	        resp.setSmallImg(sourceManager.getUserPicFolderPath(false) + targetFile.getName());
-			return new BaseResponse(ConstantsMobile.RESULT_CODE_SUCCESS,resp);
+	        resp.setSmallImg(user.getSmallImg());
+	        resp.setBigImg(user.getBigImg());
+			return ResultMobile.resultSuccess(resp);
 		}catch(Exception e){
 			log.error("", e);
-			return new BaseResponse(ConstantsMobile.RESULT_CODE_ERROR_SYSTEM);
+			return ResultMobile.resultErroSystem();
 		}
 	}
 	

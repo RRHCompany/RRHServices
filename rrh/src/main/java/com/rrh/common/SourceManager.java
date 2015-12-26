@@ -27,6 +27,9 @@ public class SourceManager {
 	@Value("#{configProperties['group_pic_path']}")
 	private String groupPicPath;
 	
+	@Value("#{configProperties['user_pic_head_path']}")
+	private String userPicHeadPath;//用户头像文件夹
+	
 	public String getUserResourcesFolderPath(boolean isLocal){
 		return (isLocal ? localRoot : networkRoot) + userResourcesPath + (isLocal ? File.separator : "/");
 	}
@@ -49,5 +52,14 @@ public class SourceManager {
 	
 	public String getGroupPicFolderPath(boolean isLocal){
 		return (isLocal ? localRoot : networkRoot) + groupPicPath + (isLocal ? File.separator : "/");
+	}
+	
+	public String getUserPicHeadPath(boolean isLocal){
+		File file=new File("D:/apache-tomcat-8.0.27/webapps/rrh/data/user_head/");
+		if(!file.exists()){
+			file.mkdirs();
+		}
+		return file.getAbsolutePath()+"/";
+//		return (isLocal ? localRoot : networkRoot) + userPicHeadPath + (isLocal ? File.separator : "/");
 	}
 }

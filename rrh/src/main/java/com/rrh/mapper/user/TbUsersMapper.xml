@@ -53,7 +53,7 @@
 		delete from tb_users
 		where user_id = #{userId,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" parameterType="com.rrh.model.user.TbUsers">
+	<insert id="insert" parameterType="com.rrh.model.user.TbUsers" useGeneratedKeys="true" keyProperty="userId">
 		insert into tb_users (user_id, user_name, mobile,
 		password, true_name, nick_name,
 		money, gender, birthday,
@@ -85,7 +85,7 @@
 		#{businessAddress,jdbcType=VARCHAR},
 		#{businessDomain,jdbcType=VARCHAR},
 		#{businessWeixin,jdbcType=VARCHAR},
-		{signature,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{payPassword,jdbcType=VARCHAR},
+		#{signature,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{payPassword,jdbcType=VARCHAR},
 		#{contactsPassword,jdbcType=VARCHAR}, #{lcd,jdbcType=TIMESTAMP},
 		#{appChannel,jdbcType=VARCHAR},
 		#{appDeviceInfo,jdbcType=VARCHAR}, #{appSystem,jdbcType=VARCHAR}, #{loginToken,jdbcType=VARCHAR},

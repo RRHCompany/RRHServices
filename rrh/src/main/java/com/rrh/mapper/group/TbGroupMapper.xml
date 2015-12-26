@@ -30,15 +30,15 @@
 		delete from tb_group
 		where group_id = #{groupId,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" parameterType="com.rrh.model.group.TbGroup">
-		insert into tb_group (group_id, name, small_img,
+	<insert id="insert" parameterType="com.rrh.model.group.TbGroup" useGeneratedKeys="true" keyProperty="groupId">
+		insert into tb_group (name, small_img,
 		big_img, type,
 		business_id,
 		user_id, is_public, bg_image,
 		create_time, parent_id,
 		qrcode,
 		last_time)
-		values (#{groupId,jdbcType=INTEGER},
+		values (
 		#{name,jdbcType=VARCHAR},
 		#{smallImg,jdbcType=VARCHAR},
 		#{bigImg,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},

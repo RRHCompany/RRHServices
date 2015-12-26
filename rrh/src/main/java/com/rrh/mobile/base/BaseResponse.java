@@ -1,6 +1,5 @@
 package com.rrh.mobile.base;
 
-import com.rrh.mobile.ErrorMsgConstant;
 
 
 /**
@@ -8,8 +7,11 @@ import com.rrh.mobile.ErrorMsgConstant;
  */
 public class BaseResponse {
 	private String resultCode;
+	
 	private String errorMsg;
+	
 	private String time;
+	
 	private Object body;
 	
 	public BaseResponse(){

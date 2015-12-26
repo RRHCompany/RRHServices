@@ -79,8 +79,8 @@ public class usersController extends BaseController{
 	//上传用户头像
 	@RequestMapping("uploadUserImg")
 	@ResponseBody
-	public BaseResponse uploadUserImg(@RequestParam MultipartFile file, @RequestParam String photoSuffix, @RequestParam String userId){
-		return userService.uploadUserImg(file, photoSuffix, userId);
+	public BaseResponse uploadUserImg(@RequestParam int userId,@RequestParam MultipartFile picFile){
+		return userService.uploadUserImg(userId,picFile);
 	}
 	
 }

@@ -59,13 +59,13 @@
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select business_id, name, taxes_code, trade_id, address, domain, tel, corporate_mobile, 
-    check_report, pass_certificate, service_tel, complaint_tel, user_id, lcd
+    check_report, pass_certificate, service_tel, complaint_tel, user_id, last_time
     from tb_business
     where business_id = #{businessId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select business_id, name, taxes_code, trade_id, address, domain, tel, corporate_mobile, 
-    check_report, pass_certificate, service_tel, complaint_tel, user_id, lcd
+    check_report, pass_certificate, service_tel, complaint_tel, user_id, last_time
     from tb_business
   </select>
   <!-- 创建团队 -->

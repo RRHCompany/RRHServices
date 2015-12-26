@@ -67,7 +67,7 @@ public interface IUserService<T> extends IBaseService<T> {
 	 * @param userId
 	 * @return
 	 */
-	public BaseResponse uploadUserImg(MultipartFile file, String photoSuffix, String userId);
+	public BaseResponse uploadUserImg(int userId,MultipartFile picFile);
 	//完善注册信息
 	public BaseResponse registerPerfectInfo(int userId, String nickName,String smallImg,String bigImg , Date birthday, int gender);
 }

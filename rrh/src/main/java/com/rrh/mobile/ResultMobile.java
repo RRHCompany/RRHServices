@@ -1,5 +1,8 @@
 package com.rrh.mobile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.rrh.common.utils.I18NUtils;
 import com.rrh.mobile.base.BaseResponse;
 
@@ -8,6 +11,12 @@ public class ResultMobile {
 	//操作成功
 	public static BaseResponse resultSuccess(Object body){
 		return new BaseResponse(ConstantsMobile.RESULT_CODE_SUCCESS,body,null);
+	}
+	//操作成功
+	public static BaseResponse resultSuccess(String key,Object value){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put(key, value);
+		return new BaseResponse(ConstantsMobile.RESULT_CODE_SUCCESS,map,null);
 	}
 	//操作失败
 	public static BaseResponse resultFall(String errorMsg){

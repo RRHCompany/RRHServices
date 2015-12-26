@@ -52,4 +52,5 @@ public interface TbBusinessMapper {
     public int insertCreateTeam(BusinessCreateTeamRequest groupTeam);
     //获取团队信息
     public TbBusiness getByUserID(@Param(value="userId") int userId);
+    
 }

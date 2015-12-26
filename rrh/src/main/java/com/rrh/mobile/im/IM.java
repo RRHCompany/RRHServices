@@ -12,6 +12,8 @@ public class IM {
 	
 	public static final String APP_SECRE="0r548LdYUTJol";
 	
+	public static final String PUBLIC_MSG_NEW_FRIEND="-100";//新的好友消息
+	
 	
 	/**========================请求URL==============================*/
 	//获取token
